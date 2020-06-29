@@ -29,7 +29,7 @@ const Emoji = styled.span`
 `
 
 const Submit = styled.button`
-  background: #12e746;
+  background: #29d177;
   border-radius: 50%;
   border: none;
   height: 40px;
