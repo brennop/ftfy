@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import { getWorkspaces } from '../services/api';
+import { getWorkspaces, getUser } from '../services/api';
 
 const Container = styled.form`
   width: 512px;
@@ -59,6 +59,7 @@ const SignIn = () => {
     const key = event.target.elements.key.value;
     localStorage.setItem('key', key);
     getWorkspaces(key).then(setWorkspaces);
+    getUser(key).then(user => localStorage.setItem('user', user.id));
   };
 
   const handleSelect = (id) => {
