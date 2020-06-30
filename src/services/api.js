@@ -10,3 +10,5 @@ export const getWorkspaces = (key) => api.get('/workspaces', { headers: { 'X-Api
 export const getUser = (key) => api.get('/user', { headers: { 'X-Api-Key': key } }).then((res) => res.data);
 
 export const getEntries = () => api.get(`/workspaces/${workspace}/user/${user}/time-entries`).then(res => res.data);
+
+export const startTimer = (entry) => api.post(`/workspaces/${workspace}/time-entries`, entry).then(res => res.data);

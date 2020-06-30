@@ -4,7 +4,10 @@ import 'typeface-inter';
 import Create from './components/Create';
 import SignIn from './components/SignIn';
 import Entry from './components/Entry';
-import { getEntries } from './services/api';
+import { getEntries, startTimer } from './services/api';
+
+const search = new URLSearchParams(window.location.search)
+const entry = atob(search.get('data'))
 
 function App() {
   const [entries, setEntries] = useState([]);
@@ -13,6 +16,14 @@ function App() {
   useEffect(() => {
     if (key) {
       getEntries().then(setEntries);
+    }
+  }, [key]);
+
+  useEffect(() => {
+    if(entry && key) {
+      window.history.pushState({}, null, '/');
+
+      startTimer(JSON.parse(entry))
     }
   }, [key]);
 
