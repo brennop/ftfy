@@ -1,9 +1,10 @@
-import React from 'react';
-import styled from '@emotion/styled';
-import { FaPlay, FaCopy } from 'react-icons/fa';
-import {startTimer} from '../services/api'
-import dayjs from 'dayjs';
-import copy from 'copy-to-clipboard';
+import React from "react";
+import styled from "@emotion/styled";
+import { FaPlay, FaCopy } from "react-icons/fa";
+import { startTimer } from "../services/api";
+import dayjs from "dayjs";
+import copy from "copy-to-clipboard";
+import { encode } from "../utils/base64";
 
 const Container = styled.form`
   background: #f0f0f0;
@@ -29,7 +30,7 @@ const Input = styled.input`
 
 const Emoji = styled.span`
   cursor: pointer;
-`
+`;
 
 const Submit = styled.button`
   background: #29d177;
@@ -56,26 +57,24 @@ const Submit = styled.button`
 `;
 
 const Create = () => {
-
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const entry = {
       description: event.target.elements.description.value,
-      start: dayjs().toISOString()
-    }
+      start: dayjs().toISOString(),
+    };
 
+    startTimer(entry);
 
-    startTimer(entry)
-    
-    const url = `localhost:3000/?data=${btoa(JSON.stringify(entry))}`
-    copy(url)
-  }
+    const url = `localhost:3000/${encode(entry)}`;
+    copy(url);
+  };
 
   return (
     <Container onSubmit={handleSubmit}>
       <Emoji>🍉</Emoji>
-      <Input name="description"/>
+      <Input name="description" />
       <Submit>
         <FaPlay />
       </Submit>
