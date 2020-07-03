@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
-import styled from '@emotion/styled';
-import dayjs from 'dayjs';
+import React, { useState, useEffect, useCallback } from "react";
+import styled from "@emotion/styled";
+import dayjs from "dayjs";
 
 const Container = styled.form`
   background: #f0f0f0;
@@ -38,16 +38,30 @@ const Time = styled(Input)`
 `;
 
 const Entry = ({ description, timeInterval }) => {
-  const delta = useMemo(() => {
-    return dayjs(dayjs(timeInterval.end) - dayjs(timeInterval.start))
-      .add(3, 'hour')
-      .format('HH:mm:ss');
+  const getDelta = useCallback(() =>
+    dayjs(dayjs(timeInterval.end || dayjs()) - dayjs(timeInterval.start))
+      .add(3, "hour")
+      .format("HH:mm:ss")
+  );
+
+  const [delta, setDelta] = useState(getDelta());
+
+  useEffect(() => {
+    if (!timeInterval.end) {
+      const interval = setInterval(() => {
+        setDelta(getDelta());
+      }, 500);
+
+      return () => {
+        clearInterval(interval);
+      };
+    }
   }, [timeInterval]);
 
   return (
     <Container>
       <Description defaultValue={description} />
-      <Time defaultValue={delta} />
+      <Time value={delta} />
     </Container>
   );
 };
