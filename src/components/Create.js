@@ -11,7 +11,7 @@ const Container = styled.form`
   padding: 1em;
   border-radius: 12px;
   height: 4em;
-  box-shadow: 0 0 16px 8px #00000008;
+  box-shadow: 0 4px 8px -4px #00000010;
   display: flex;
   align-items: center;
 
@@ -38,7 +38,7 @@ const Submit = styled.button`
   border: none;
   height: 40px;
   width: 40px;
-  box-shadow: 0 0 16px 8px #00000008;
+  box-shadow: 0 0 8px 0px #29d17740;
   display: flex;
   align-items: center;
   justify-content: center;

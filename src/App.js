@@ -31,8 +31,7 @@ function App() {
     <Layout>
       {key ? (
         <>
-          {" "}
-          <Create />{" "}
+          <Create />
           {entries.map((entry) => (
             <Entry key={entry.id} {...entry} />
           ))}{" "}
