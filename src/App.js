@@ -13,28 +13,32 @@ function App() {
 
   useEffect(() => {
     if (key) {
-      getEntries().then(setEntries);
+      getEntries().then((entries) => {
+        setEntries(entries);
+      });
+
+      const entry = window.location.pathname.slice(1);
+
+      if (entry) {
+        window.history.pushState({}, null, "/");
+
+        decode(entry).then(startTimer).then(addEntry);
+      }
     }
   }, [key]);
 
-  useEffect(() => {
-    const entry = window.location.pathname.slice(1);
-
-    if (entry && key) {
-      window.history.pushState({}, null, "/");
-
-      decode(entry).then(startTimer);
-    }
-  }, [key]);
+  const addEntry = (entry) => {
+    setEntries((entries) => [entry, ...entries]);
+  };
 
   return (
     <Layout>
       {key ? (
         <>
-          <Create />
+          <Create onSubmit={addEntry} />
           {entries.map((entry) => (
             <Entry key={entry.id} {...entry} />
-          ))}{" "}
+          ))}
         </>
       ) : (
         <SignIn />

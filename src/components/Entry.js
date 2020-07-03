@@ -38,10 +38,12 @@ const Time = styled(Input)`
 `;
 
 const Entry = ({ description, timeInterval }) => {
-  const getDelta = useCallback(() =>
-    dayjs(dayjs(timeInterval.end || dayjs()) - dayjs(timeInterval.start))
-      .add(3, "hour")
-      .format("HH:mm:ss")
+  const getDelta = useCallback(
+    () =>
+      dayjs(dayjs(timeInterval.end || dayjs()) - dayjs(timeInterval.start))
+        .add(3, "hour")
+        .format("HH:mm:ss"),
+    [timeInterval]
   );
 
   const [delta, setDelta] = useState(getDelta());
@@ -56,7 +58,7 @@ const Entry = ({ description, timeInterval }) => {
         clearInterval(interval);
       };
     }
-  }, [timeInterval]);
+  }, [timeInterval, getDelta]);
 
   return (
     <Container>

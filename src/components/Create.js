@@ -56,7 +56,7 @@ const Submit = styled.button`
   }
 `;
 
-const Create = () => {
+const Create = ({ onSubmit }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -65,7 +65,7 @@ const Create = () => {
       start: dayjs().toISOString(),
     };
 
-    startTimer(entry);
+    startTimer(entry).then(onSubmit);
 
     const url = `localhost:3000/${encode(entry)}`;
     copy(url);
