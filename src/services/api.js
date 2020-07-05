@@ -1,4 +1,5 @@
 import axios from "axios";
+import dayjs from "dayjs";
 
 const api = axios.create({
   baseURL: "https://api.clockify.me/api/v1",
@@ -28,3 +29,10 @@ export const startTimer = (entry) =>
 
 export const deleteEntry = (id) =>
   api.delete(`workspaces/${workspace}/time-entries/${id}`);
+
+export const stopTimer = () =>
+  api
+    .patch(`/workspaces/${workspace}/user/${user}/time-entries`, {
+      end: dayjs().toISOString(),
+    })
+    .then((res) => res.data);

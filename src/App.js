@@ -36,6 +36,12 @@ function App() {
     setEntries((entries) => entries.filter((entry) => entry.id !== id));
   };
 
+  const updateEntry = (updated) => {
+    setEntries((entries) =>
+      entries.map((entry) => (entry.id === updated.id ? updated : entry))
+    );
+  };
+
   return (
     <Layout>
       {key ? (
@@ -48,6 +54,7 @@ function App() {
                   index={index}
                   key={entry.id}
                   onDelete={removeEntry}
+                  updateEntry={updateEntry}
                   {...entry}
                 />
               ))}

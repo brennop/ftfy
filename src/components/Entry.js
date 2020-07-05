@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
 import { motion, useAnimation, usePresence } from "framer-motion";
-import { deleteEntry } from "../services/api";
+import { deleteEntry, stopTimer } from "../services/api";
+import { FaStop } from "react-icons/fa";
 
 const MotionContainer = styled(motion.div)`
   background: #f0f0f0;
@@ -17,7 +18,7 @@ const MotionContainer = styled(motion.div)`
   margin: 1em 10%;
 
   & > * {
-    margin: 0.5em;
+    margin: 0.2em;
   }
 `;
 
@@ -59,12 +60,33 @@ const Time = styled(Input)`
   max-width: 6em;
 `;
 
+const Stop = styled.button`
+  background: #f72e50;
+  border-radius: 50%;
+  border: none;
+  height: 40px;
+  width: 40px;
+  box-shadow: 0 0 8px 0px #f72e5040;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.2s ease-in;
+
+  :hover {
+    box-shadow: 0 0 12px 8px #00000010;
+  }
+`;
+
 const Entry = ({
   id,
+  index,
   description,
   timeInterval,
   onDelete: removeEntry,
-  index,
+  updateEntry,
 }) => {
   const getDelta = useCallback(
     () =>
@@ -112,10 +134,14 @@ const Entry = ({
     controls.start({
       y: index * 80,
     });
-  }, [index]);
+  }, [index, controls]);
 
   const handleDelete = () => {
     deleteEntry(id).then(() => removeEntry(id));
+  };
+
+  const handleStop = () => {
+    stopTimer().then(updateEntry);
   };
 
   return (
@@ -130,6 +156,11 @@ const Entry = ({
     >
       <Description defaultValue={description} />
       <Time value={delta} readOnly />
+      {!timeInterval.end && (
+        <Stop onClick={handleStop}>
+          <FaStop />
+        </Stop>
+      )}
       <Close onClick={handleDelete} />
     </MotionContainer>
   );
