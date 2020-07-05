@@ -6,7 +6,8 @@ import SignIn from "./components/SignIn";
 import Entry from "./components/Entry";
 import { getEntries, startTimer } from "./services/api";
 import { decode } from "./utils/base64";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
+import { ProjectsProvider } from "./context/Projects";
 
 function App() {
   const [entries, setEntries] = useState([]);
@@ -45,7 +46,7 @@ function App() {
   return (
     <Layout>
       {key ? (
-        <>
+        <ProjectsProvider>
           <Create onSubmit={addEntry} />
           <div
             style={{ position: "relative", height: 80 * entries.length + "px" }}
@@ -62,7 +63,7 @@ function App() {
               ))}
             </AnimatePresence>
           </div>
-        </>
+        </ProjectsProvider>
       ) : (
         <SignIn />
       )}

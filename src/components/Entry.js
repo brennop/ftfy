@@ -11,6 +11,7 @@ import { deleteEntry, stopTimer } from "../services/api";
 import { FaStop, FaShare, FaTrash } from "react-icons/fa";
 import copy from "copy-to-clipboard";
 import { encode } from "../utils/base64";
+import Project from "./Project";
 
 const MotionContainer = styled(motion.div)`
   background: #f0f0f0;
@@ -91,6 +92,8 @@ const Entry = ({
   timeInterval,
   onDelete: removeEntry,
   updateEntry,
+  projectId,
+  billable,
 }) => {
   const getDelta = useCallback(
     () =>
@@ -157,6 +160,8 @@ const Entry = ({
     const url = `${window.location.host}/${encode({
       description,
       ...timeInterval,
+      projectId,
+      billable,
     })}`;
     copy(url);
   };
@@ -171,6 +176,7 @@ const Entry = ({
         damping: 20,
       }}
     >
+      <Project id={projectId} />
       <Description defaultValue={description} readOnly />
       <Time value={delta} readOnly />
       <SmallButton onClick={handleShare}>

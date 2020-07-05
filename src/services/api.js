@@ -36,3 +36,8 @@ export const stopTimer = () =>
       end: dayjs().toISOString(),
     })
     .then((res) => res.data);
+
+export const getProjects = () =>
+  api
+    .get(`/workspaces/${workspace}/projects?page-size=100`)
+    .then((res) => res.data);

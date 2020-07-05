@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { FaPlay, FaPlus } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import { startTimer } from "../services/api";
 import dayjs from "dayjs";
 import copy from "copy-to-clipboard";
@@ -27,10 +27,6 @@ const Input = styled.input`
   flex: 1;
   padding: 0.4em 0.8em;
   font-size: 16px;
-`;
-
-const Emoji = styled.span`
-  cursor: pointer;
 `;
 
 const Submit = styled.button`
@@ -79,7 +75,6 @@ const Create = ({ onSubmit }) => {
 
   return (
     <Container onSubmit={handleSubmit}>
-      <Emoji>🍉</Emoji>
       <Input name="description" autoFocus />
       <Submit>
         <FaPlus />
