@@ -47,7 +47,9 @@ function App() {
       {key ? (
         <>
           <Create onSubmit={addEntry} />
-          <div style={{ position: "relative" }}>
+          <div
+            style={{ position: "relative", height: 80 * entries.length + "px" }}
+          >
             <AnimatePresence>
               {entries.map((entry, index) => (
                 <Entry

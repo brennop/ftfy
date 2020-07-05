@@ -19,7 +19,7 @@ export const getUser = (key) =>
 
 export const getEntries = () =>
   api
-    .get(`/workspaces/${workspace}/user/${user}/time-entries`)
+    .get(`/workspaces/${workspace}/user/${user}/time-entries?page-size=20`)
     .then((res) => res.data);
 
 export const startTimer = (entry) =>

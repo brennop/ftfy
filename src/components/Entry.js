@@ -14,8 +14,8 @@ const MotionContainer = styled(motion.div)`
   display: flex;
   align-items: center;
   position: absolute;
-  width: 80%;
-  margin: 1em 10%;
+  width: 90%;
+  margin: 1em 5%;
 
   & > * {
     margin: 0.2em;
@@ -114,10 +114,15 @@ const Entry = ({
   }, [timeInterval, getDelta]);
 
   useEffect(() => {
-    controls.start({
-      scale: 1,
-    });
-  }, []);
+    setTimeout(
+      () =>
+        controls.start({
+          scale: 1,
+        }),
+      index * 50
+    );
+    // index is here bc of eslint but it should'nt
+  }, [controls, index]);
 
   useEffect(() => {
     if (!isPresent) {
