@@ -67,14 +67,14 @@ const Create = ({ onSubmit }) => {
 
     startTimer(entry).then(onSubmit);
 
-    const url = `localhost:3000/${encode(entry)}`;
+    const url = `${window.location.host}/${encode(entry)}`;
     copy(url);
   };
 
   return (
     <Container onSubmit={handleSubmit}>
       <Emoji>🍉</Emoji>
-      <Input name="description" />
+      <Input name="description" autoFocus />
       <Submit>
         <FaPlay />
       </Submit>

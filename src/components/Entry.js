@@ -3,7 +3,9 @@ import styled from "@emotion/styled";
 import dayjs from "dayjs";
 import { motion, useAnimation, usePresence } from "framer-motion";
 import { deleteEntry, stopTimer } from "../services/api";
-import { FaStop } from "react-icons/fa";
+import { FaStop, FaShare, FaTrash } from "react-icons/fa";
+import copy from "copy-to-clipboard";
+import { encode } from "../utils/base64";
 
 const MotionContainer = styled(motion.div)`
   background: #f0f0f0;
@@ -34,24 +36,6 @@ const Input = styled.input`
   }
 `;
 
-const Close = styled.button`
-  border: none;
-  background: none;
-  font-size: 20px;
-  color: #808080;
-  padding: 0.4em;
-
-  :hover {
-    color: #424242;
-  }
-
-  ::before {
-    content: "+";
-  }
-
-  transform: rotate(45deg);
-`;
-
 const Description = styled(Input)`
   flex: 1;
 `;
@@ -77,6 +61,20 @@ const Stop = styled.button`
 
   :hover {
     box-shadow: 0 0 12px 8px #00000010;
+  }
+`;
+
+const SmallButton = styled.button`
+  border: none;
+  background: none;
+  font-size: 14px;
+  color: #808080;
+  padding: 0.4em;
+  border-radius: 4px;
+
+  :hover {
+    color: #424242;
+    background: #f8f8f8;
   }
 `;
 
@@ -149,6 +147,14 @@ const Entry = ({
     stopTimer().then(updateEntry);
   };
 
+  const handleShare = () => {
+    const url = `${window.location.host}/${encode({
+      description,
+      ...timeInterval,
+    })}`;
+    copy(url);
+  };
+
   return (
     <MotionContainer
       initial={{ scale: 0, y: 0 }}
@@ -159,14 +165,19 @@ const Entry = ({
         damping: 20,
       }}
     >
-      <Description defaultValue={description} />
+      <Description defaultValue={description} readOnly />
       <Time value={delta} readOnly />
+      <SmallButton onClick={handleShare}>
+        <FaShare />
+      </SmallButton>
+      <SmallButton onClick={handleDelete}>
+        <FaTrash />
+      </SmallButton>
       {!timeInterval.end && (
         <Stop onClick={handleStop}>
           <FaStop />
         </Stop>
       )}
-      <Close onClick={handleDelete} />
     </MotionContainer>
   );
 };
