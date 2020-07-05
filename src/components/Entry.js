@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
+import { motion } from "framer-motion";
 
 const Container = styled.form`
   background: #f0f0f0;
@@ -61,10 +62,20 @@ const Entry = ({ description, timeInterval }) => {
   }, [timeInterval, getDelta]);
 
   return (
-    <Container>
-      <Description defaultValue={description} />
-      <Time value={delta} />
-    </Container>
+    <motion.div
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{
+        type: "spring",
+        stiffness: 100,
+        damping: 20,
+      }}
+    >
+      <Container>
+        <Description defaultValue={description} />
+        <Time value={delta} />
+      </Container>
+    </motion.div>
   );
 };
 
