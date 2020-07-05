@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
-import { motion, useAnimation, usePresence } from "framer-motion";
+import {
+  motion,
+  useAnimation,
+  usePresence,
+  AnimatePresence,
+} from "framer-motion";
 import { deleteEntry, stopTimer } from "../services/api";
 import { FaStop, FaShare, FaTrash } from "react-icons/fa";
 import copy from "copy-to-clipboard";
@@ -38,13 +43,14 @@ const Input = styled.input`
 
 const Description = styled(Input)`
   flex: 1;
+  transition: all 0.2s ease-in;
 `;
 
 const Time = styled(Input)`
   max-width: 6em;
 `;
 
-const Stop = styled.button`
+const Stop = styled(motion.button)`
   background: #f72e50;
   border-radius: 50%;
   border: none;
@@ -173,11 +179,22 @@ const Entry = ({
       <SmallButton onClick={handleDelete}>
         <FaTrash />
       </SmallButton>
-      {!timeInterval.end && (
-        <Stop onClick={handleStop}>
-          <FaStop />
-        </Stop>
-      )}
+      <AnimatePresence>
+        {!timeInterval.end && (
+          <Stop
+            key="stop"
+            onClick={handleStop}
+            exit={{ width: 0, height: 0, opacity: 0 }}
+            transition={{
+              type: "spring",
+              stiffness: 300,
+              damping: 20,
+            }}
+          >
+            <FaStop />
+          </Stop>
+        )}
+      </AnimatePresence>
     </MotionContainer>
   );
 };
