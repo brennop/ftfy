@@ -69,7 +69,7 @@ const Create = ({ onSubmit }) => {
 
     startTimer(entry).then(onSubmit);
 
-    const url = `${window.location.host}/${encode(entry)}`;
+    const url = `${window.location.origin}/${encode(entry)}`;
     copy(url);
   };
 

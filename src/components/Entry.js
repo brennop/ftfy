@@ -157,7 +157,7 @@ const Entry = ({
   };
 
   const handleShare = () => {
-    const url = `${window.location.host}/${encode({
+    const url = `${window.location.origin}/${encode({
       description,
       ...timeInterval,
       projectId,
