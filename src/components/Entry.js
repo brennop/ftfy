@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
-import { motion } from "framer-motion";
+import { motion, useAnimation, usePresence } from "framer-motion";
+import { deleteEntry } from "../services/api";
 
-const Container = styled.form`
+const MotionContainer = styled(motion.div)`
   background: #f0f0f0;
   padding: 1em;
   border-radius: 12px;
@@ -11,7 +12,9 @@ const Container = styled.form`
   box-shadow: 0 0 16px 8px #00000008;
   display: flex;
   align-items: center;
-  margin: 2em 1em;
+  position: absolute;
+  width: 80%;
+  margin: 1em 10%;
 
   & > * {
     margin: 0.5em;
@@ -30,6 +33,24 @@ const Input = styled.input`
   }
 `;
 
+const Close = styled.button`
+  border: none;
+  background: none;
+  font-size: 20px;
+  color: #808080;
+  padding: 0.4em;
+
+  :hover {
+    color: #424242;
+  }
+
+  ::before {
+    content: "+";
+  }
+
+  transform: rotate(45deg);
+`;
+
 const Description = styled(Input)`
   flex: 1;
 `;
@@ -38,7 +59,13 @@ const Time = styled(Input)`
   max-width: 6em;
 `;
 
-const Entry = ({ description, timeInterval }) => {
+const Entry = ({
+  id,
+  description,
+  timeInterval,
+  onDelete: removeEntry,
+  index,
+}) => {
   const getDelta = useCallback(
     () =>
       dayjs(dayjs(timeInterval.end || dayjs()) - dayjs(timeInterval.start))
@@ -48,6 +75,9 @@ const Entry = ({ description, timeInterval }) => {
   );
 
   const [delta, setDelta] = useState(getDelta());
+
+  const controls = useAnimation();
+  const [isPresent, safeToRemove] = usePresence();
 
   useEffect(() => {
     if (!timeInterval.end) {
@@ -61,21 +91,47 @@ const Entry = ({ description, timeInterval }) => {
     }
   }, [timeInterval, getDelta]);
 
+  useEffect(() => {
+    controls.start({
+      scale: 1,
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!isPresent) {
+      controls.start({
+        scale: 0.4,
+        opacity: 0,
+      });
+
+      setTimeout(safeToRemove, 500);
+    }
+  }, [isPresent, safeToRemove, controls]);
+
+  useEffect(() => {
+    controls.start({
+      y: index * 80,
+    });
+  }, [index]);
+
+  const handleDelete = () => {
+    deleteEntry(id).then(() => removeEntry(id));
+  };
+
   return (
-    <motion.div
-      initial={{ scale: 0 }}
-      animate={{ scale: 1 }}
+    <MotionContainer
+      initial={{ scale: 0, y: 0 }}
+      animate={controls}
       transition={{
         type: "spring",
         stiffness: 100,
         damping: 20,
       }}
     >
-      <Container>
-        <Description defaultValue={description} />
-        <Time value={delta} />
-      </Container>
-    </motion.div>
+      <Description defaultValue={description} />
+      <Time value={delta} readOnly />
+      <Close onClick={handleDelete} />
+    </MotionContainer>
   );
 };
 

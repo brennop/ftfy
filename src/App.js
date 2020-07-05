@@ -6,6 +6,7 @@ import SignIn from "./components/SignIn";
 import Entry from "./components/Entry";
 import { getEntries, startTimer } from "./services/api";
 import { decode } from "./utils/base64";
+import { AnimatePresence, motion } from "framer-motion";
 
 function App() {
   const [entries, setEntries] = useState([]);
@@ -31,14 +32,27 @@ function App() {
     setEntries((entries) => [entry, ...entries]);
   };
 
+  const removeEntry = (id) => {
+    setEntries((entries) => entries.filter((entry) => entry.id !== id));
+  };
+
   return (
     <Layout>
       {key ? (
         <>
           <Create onSubmit={addEntry} />
-          {entries.map((entry) => (
-            <Entry key={entry.id} {...entry} />
-          ))}
+          <div style={{ position: "relative" }}>
+            <AnimatePresence>
+              {entries.map((entry, index) => (
+                <Entry
+                  index={index}
+                  key={entry.id}
+                  onDelete={removeEntry}
+                  {...entry}
+                />
+              ))}
+            </AnimatePresence>
+          </div>
         </>
       ) : (
         <SignIn />
