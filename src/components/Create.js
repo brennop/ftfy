@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { FaPlay, FaCopy } from "react-icons/fa";
+import { FaPlay, FaPlus } from "react-icons/fa";
 import { startTimer } from "../services/api";
 import dayjs from "dayjs";
 import copy from "copy-to-clipboard";
 import { encode } from "../utils/base64";
+import chrono from "chrono-node";
 
 const Container = styled.form`
   background: #f0f0f0;
@@ -33,12 +34,12 @@ const Emoji = styled.span`
 `;
 
 const Submit = styled.button`
-  background: #29d177;
+  background: #5496f2;
   border-radius: 50%;
   border: none;
   height: 40px;
   width: 40px;
-  box-shadow: 0 0 8px 0px #29d17740;
+  box-shadow: 0 0 8px 0px #5496f240;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -50,19 +51,24 @@ const Submit = styled.button`
   :hover {
     box-shadow: 0 0 12px 8px #00000010;
   }
-
-  svg {
-    transform: translate(2px, 0);
-  }
 `;
 
 const Create = ({ onSubmit }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
+    const { value } = event.target.elements.description;
+
+    const [parsedDate] = chrono.pt.parse(value);
+
+    const description = value.replace(parsedDate?.text, "");
+
     const entry = {
-      description: event.target.elements.description.value,
-      start: dayjs().toISOString(),
+      description,
+      start: dayjs(parsedDate?.start?.date()).toISOString(),
+      end: parsedDate?.end
+        ? dayjs(parsedDate?.end?.date()).toISOString()
+        : undefined,
     };
 
     startTimer(entry).then(onSubmit);
@@ -76,7 +82,7 @@ const Create = ({ onSubmit }) => {
       <Emoji>🍉</Emoji>
       <Input name="description" autoFocus />
       <Submit>
-        <FaPlay />
+        <FaPlus />
       </Submit>
     </Container>
   );
