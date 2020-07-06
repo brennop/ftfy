@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useReducer } from "react";
 import styled from "@emotion/styled";
 import { FaPlus } from "react-icons/fa";
 import { startTimer } from "../services/api";
@@ -6,6 +6,8 @@ import dayjs from "dayjs";
 import copy from "copy-to-clipboard";
 import { encode } from "../utils/base64";
 import chrono from "chrono-node";
+import Project from "./Project";
+import Suggestions from "./Suggestions";
 
 const Container = styled.form`
   background: #f0f0f0;
@@ -19,14 +21,6 @@ const Container = styled.form`
   & > * {
     margin: 0.5em;
   }
-`;
-
-const Input = styled.input`
-  border: none;
-  border-radius: 8px;
-  flex: 1;
-  padding: 0.4em 0.8em;
-  font-size: 16px;
 `;
 
 const Submit = styled.button`
@@ -74,12 +68,15 @@ const Create = ({ onSubmit }) => {
   };
 
   return (
-    <Container onSubmit={handleSubmit}>
-      <Input name="description" autoFocus />
-      <Submit>
-        <FaPlus />
-      </Submit>
-    </Container>
+    <>
+      <Container onSubmit={handleSubmit}>
+        <Project />
+        <Suggestions name="description" />
+        <Submit>
+          <FaPlus />
+        </Submit>
+      </Container>
+    </>
   );
 };
 
