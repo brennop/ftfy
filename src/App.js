@@ -24,7 +24,10 @@ function App() {
       if (entry) {
         window.history.pushState({}, null, "/");
 
-        decode(entry).then(startTimer).then(addEntry);
+        decode(entry)
+          .then(startTimer)
+          .then(addEntry)
+          .catch((error) => console.error(error));
       }
     }
   }, [key]);
