@@ -112,13 +112,24 @@ const Entry = ({
     if (!timeInterval.end) {
       const interval = setInterval(() => {
         setDelta(getDelta());
-      }, 500);
+      }, 1000);
 
       return () => {
         clearInterval(interval);
       };
     }
   }, [timeInterval, getDelta]);
+
+  useEffect(() => {
+    if (timeInterval.end == null) {
+      const time = delta.replace(/00:/g, "");
+      const suffix = { 2: "sec", 5: "min" }[time.length] || "";
+
+      document.title = `${time} ${suffix} • ftfy`;
+    }
+
+    return () => (document.title = `ftfy`);
+  }, [delta, timeInterval.end]);
 
   useEffect(() => {
     setTimeout(
@@ -128,7 +139,6 @@ const Entry = ({
         }),
       index * 50
     );
-    // index is here bc of eslint but it should'nt
   }, [controls, index]);
 
   useEffect(() => {
