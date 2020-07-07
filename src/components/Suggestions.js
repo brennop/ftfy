@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import styled from "@emotion/styled";
-import { useProjects } from "context/Projects";
 
 const Box = styled.div`
   width: 100%;
@@ -17,22 +17,8 @@ const List = styled.ul`
 
 const Item = styled.li`
   padding: 0.5em 1em;
-  color: ${(props) => props.color};
 
   background: ${(props) => (props.focused ? "#eee" : "none")};
-`;
-
-const Container = styled.div`
-  flex: 1;
-`;
-
-const Input = styled.div`
-  background: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 0.4em 0.8em;
-  font-size: 16px;
-  width: 100%;
 `;
 
 const normalize = (string) =>
@@ -43,23 +29,18 @@ const normalize = (string) =>
 
 const includes = (a, b) => normalize(a).includes(normalize(b));
 
-const Suggestions = ({ name }) => {
-  const [value, setValue] = useState("");
-  const [show, setShow] = useState(false);
-  const projects = useProjects();
-  const [filtered, setFiltered] = useState(projects);
+const Suggestions = ({
+  onSelect,
+  input,
+  setValue,
+  trigger,
+  value,
+  suggestions,
+  itemRenderer,
+}) => {
+  const [show, setShow] = useState(true);
+  const [filtered, setFiltered] = useState([]);
   const [focused, setFocused] = useState(0);
-  const input = useRef();
-
-  const handleChange = (event) => {
-    setValue(event.target.innerText);
-  };
-
-  const count = () => filtered.length;
-
-  const increaseFocused = () =>
-    setFocused((amount) => Math.min(amount + 1, count() - 1));
-  const decreaseFocused = () => setFocused((amount) => Math.max(amount - 1, 0));
 
   useEffect(() => {
     const handleClick = () => {
@@ -71,33 +52,44 @@ const Suggestions = ({ name }) => {
     return () => document.removeEventListener("click", handleClick);
   }, []);
 
-  const handleKey = (event) => {
-    if (show) {
-      const { key, shiftKey } = event;
-      switch (key) {
-        case "ArrowDown":
-          increaseFocused();
-          event.preventDefault();
-          break;
-        case "ArrowUp":
-          decreaseFocused();
-          event.preventDefault();
-          break;
-        case "Tab":
-          shiftKey ? decreaseFocused() : increaseFocused();
-          event.preventDefault();
-          break;
-        case "Enter":
-          event.preventDefault();
-          input.current.innerHTML =
-            value.split("@")[0] +
-            "<span>@" +
-            filtered[focused].name +
-            "</span>";
-        default:
+  useEffect(() => {
+    const { current } = input;
+
+    const handleKey = (event) => {
+      if (show) {
+        const { key, shiftKey } = event;
+        switch (key) {
+          case "ArrowDown":
+            setFocused((amount) => Math.min(amount + 1, filtered.length - 1));
+            event.preventDefault();
+            break;
+          case "ArrowUp":
+            setFocused((amount) => Math.max(amount - 1, 0));
+            event.preventDefault();
+            break;
+          case "Tab":
+            shiftKey
+              ? setFocused((amount) => Math.max(amount - 1, 0))
+              : setFocused((amount) =>
+                  Math.min(amount + 1, filtered.length - 1)
+                );
+            event.preventDefault();
+            break;
+          case "Enter":
+            event.preventDefault();
+            const regex = new RegExp(`${trigger}([^ ]*)`);
+            setValue((value) => value.replace(regex, ""));
+            onSelect(filtered[focused]);
+            break;
+          default:
+        }
       }
-    }
-  };
+    };
+
+    current.addEventListener("keydown", handleKey);
+
+    return () => current.removeEventListener("keydown", handleKey);
+  }, [input, filtered, focused, onSelect, show, trigger, setValue]);
 
   useEffect(() => {
     setFocused(0);
@@ -105,45 +97,33 @@ const Suggestions = ({ name }) => {
     if (value.includes("@")) {
       setShow(true);
       setFiltered(
-        projects
-          .filter((project) =>
-            includes(project.name, value.split("@")[1].trim())
+        suggestions
+          .filter((suggestion) =>
+            includes(suggestion.name, value.split("@")[1])
           )
           .slice(0, 5)
       );
     } else {
       setShow(false);
     }
-  }, [value]);
+  }, [suggestions, value]);
 
-  return (
-    <Container>
-      <Input
-        onKeyDown={handleKey}
-        name={name}
-        autoFocus
-        autoComplete="off"
-        onInput={handleChange}
-        contentEditable
-        ref={input}
-      />
-      {show && (
-        <Box>
-          <List>
-            {filtered.map((project, index) => (
-              <Item
-                key={project.id}
-                color={project.color}
-                focused={index === focused}
-              >
-                {project.name}
-              </Item>
-            ))}
-          </List>
-        </Box>
-      )}
-    </Container>
-  );
+  return input.current
+    ? createPortal(
+        show && (
+          <Box>
+            <List>
+              {filtered.map((suggestion, index) => (
+                <Item key={suggestion.id} focused={index === focused}>
+                  {itemRenderer(suggestion)}
+                </Item>
+              ))}
+            </List>
+          </Box>
+        ),
+        input.current
+      )
+    : null;
 };
 
 export default Suggestions;

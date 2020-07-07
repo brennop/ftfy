@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { FaPlus } from "react-icons/fa";
 import { startTimer } from "../services/api";
@@ -8,6 +8,7 @@ import { encode } from "../utils/base64";
 import chrono from "chrono-node";
 import Project from "./Project";
 import Suggestions from "./Suggestions";
+import { useProjects } from "context/Projects";
 
 const Container = styled.form`
   background: #f0f0f0;
@@ -43,7 +44,30 @@ const Submit = styled.button`
   }
 `;
 
+const Input = styled.input`
+  background: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.4em 0.8em;
+  font-size: 16px;
+  width: 100%;
+`;
+
+const InputContainer = styled.div`
+  flex: 1;
+`;
+
+const ProjectSuggestion = styled.span`
+  color: ${(props) => props.color};
+`;
+
 const Create = ({ onSubmit }) => {
+  const [project, setProject] = useState();
+  const [value, setValue] = useState("");
+  const projects = useProjects();
+
+  const input = useRef();
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -70,8 +94,27 @@ const Create = ({ onSubmit }) => {
   return (
     <>
       <Container onSubmit={handleSubmit}>
-        <Project />
-        <Suggestions name="description" />
+        <Project id={project} />
+        <InputContainer ref={input}>
+          <Input
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            name="description"
+            autoFocus
+            autoComplete="off"
+          />
+        </InputContainer>
+        <Suggestions
+          onSelect={({ id }) => setProject(id)}
+          input={input}
+          value={value}
+          setValue={setValue}
+          suggestions={projects}
+          trigger="@"
+          itemRenderer={(project) => (
+            <ProjectSuggestion {...project}>{project.name}</ProjectSuggestion>
+          )}
+        />
         <Submit>
           <FaPlus />
         </Submit>
