@@ -12,6 +12,7 @@ import { FaStop, FaShare, FaTrash } from "react-icons/fa";
 import copy from "copy-to-clipboard";
 import { encode } from "../utils/base64";
 import Project from "./Project";
+import Tags from "./Tags";
 
 const MotionContainer = styled(motion.div)`
   background: #f0f0f0;
@@ -94,6 +95,7 @@ const Entry = ({
   updateEntry,
   projectId,
   billable,
+  tagIds,
 }) => {
   const getDelta = useCallback(
     () =>
@@ -187,6 +189,7 @@ const Entry = ({
       }}
     >
       <Project id={projectId} />
+      <Tags ids={tagIds || []} />
       <Description defaultValue={description} readOnly />
       <Time value={delta} readOnly />
       <SmallButton onClick={handleShare}>

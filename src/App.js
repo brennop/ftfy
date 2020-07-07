@@ -8,6 +8,7 @@ import { getEntries, startTimer } from "./services/api";
 import { decode } from "./utils/base64";
 import { AnimatePresence } from "framer-motion";
 import { ProjectsProvider } from "./context/Projects";
+import { TagsProvider } from "./context/Tags";
 
 function App() {
   const [entries, setEntries] = useState([]);
@@ -50,22 +51,27 @@ function App() {
     <Layout>
       {key ? (
         <ProjectsProvider>
-          <Create onSubmit={addEntry} />
-          <div
-            style={{ position: "relative", height: 80 * entries.length + "px" }}
-          >
-            <AnimatePresence>
-              {entries.map((entry, index) => (
-                <Entry
-                  index={index}
-                  key={entry.id}
-                  onDelete={removeEntry}
-                  updateEntry={updateEntry}
-                  {...entry}
-                />
-              ))}
-            </AnimatePresence>
-          </div>
+          <TagsProvider>
+            <Create onSubmit={addEntry} />
+            <div
+              style={{
+                position: "relative",
+                height: 80 * entries.length + "px",
+              }}
+            >
+              <AnimatePresence>
+                {entries.map((entry, index) => (
+                  <Entry
+                    index={index}
+                    key={entry.id}
+                    onDelete={removeEntry}
+                    updateEntry={updateEntry}
+                    {...entry}
+                  />
+                ))}
+              </AnimatePresence>
+            </div>
+          </TagsProvider>
         </ProjectsProvider>
       ) : (
         <SignIn />
