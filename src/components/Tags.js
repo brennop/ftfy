@@ -19,7 +19,7 @@ const Tag = styled(motion.div)`
 const Tags = ({ ids }) => {
   const tags = useTags();
 
-  return ids && tags
+  return ids && tags.length
     ? ids.map((id) => (
         <Tag animate={{ scale: 1 }} initial={{ scale: 0 }} key={id}>
           {tags.find((tag) => tag.id === id).name}

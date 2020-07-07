@@ -7,7 +7,7 @@ import {
   usePresence,
   AnimatePresence,
 } from "framer-motion";
-import { deleteEntry, stopTimer } from "../services/api";
+import { deleteEntry, stopTimer, updateDescription } from "../services/api";
 import { FaStop, FaShare, FaTrash } from "react-icons/fa";
 import copy from "copy-to-clipboard";
 import { encode } from "../utils/base64";
@@ -179,6 +179,11 @@ const Entry = ({
     copy(url);
   };
 
+  const handleDescriptionUpdate = (event) => {
+    const { value } = event.target;
+    updateDescription(id, { description: value }).then(updateEntry);
+  };
+
   return (
     <MotionContainer
       initial={{ scale: 0, y: 0 }}
@@ -191,7 +196,10 @@ const Entry = ({
     >
       <Project id={projectId} />
       <Tags ids={tagIds || []} />
-      <Description defaultValue={description} readOnly />
+      <Description
+        defaultValue={description}
+        onBlur={handleDescriptionUpdate}
+      />
       <Time value={delta} readOnly />
       <SmallButton onClick={handleShare}>
         <FaShare />

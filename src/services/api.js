@@ -30,6 +30,18 @@ export const startTimer = (entry) =>
 export const deleteEntry = (id) =>
   api.delete(`workspaces/${workspace}/time-entries/${id}`);
 
+export const updateDescription = (id, data) =>
+  axios.put(
+    `https://global.api.clockify.me/workspaces/${workspace}/timeEntries/${id}/description`,
+    data,
+    {
+      headers: {
+        "X-Api-Key": localStorage.getItem("key"),
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
 export const stopTimer = () =>
   api
     .patch(`/workspaces/${workspace}/user/${user}/time-entries`, {
