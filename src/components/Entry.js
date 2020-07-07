@@ -27,14 +27,15 @@ const MotionContainer = styled(motion.div)`
   margin: 1em 5%;
 
   & > * {
-    margin: 0.2em;
+    margin: 0.5em;
   }
 `;
 
 const Input = styled.input`
   border: none;
   border-radius: 8px;
-  padding: 0.4em 0.8em;
+  padding: 0.4em;
+  margin: 0 0.2em;
   font-size: 16px;
   background: transparent;
 
@@ -75,14 +76,14 @@ const Stop = styled(motion.button)`
 const SmallButton = styled.button`
   border: none;
   background: none;
-  font-size: 14px;
+  font-size: 12px;
   color: #808080;
-  padding: 0.4em;
+  padding: 0.6em;
   border-radius: 4px;
+  transition: 0.2s ease-in;
 
   :hover {
     color: #424242;
-    background: #f8f8f8;
   }
 `;
 

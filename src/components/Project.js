@@ -7,8 +7,6 @@ const Indicator = styled(motion.div)`
   height: 8px;
   width: 8px;
   border-radius: 50%;
-
-  background: ${(props) => props.color};
 `;
 
 const Project = ({ id }) => {
@@ -16,7 +14,7 @@ const Project = ({ id }) => {
 
   const color = projects.find((project) => project.id === id)?.color;
 
-  return <Indicator color={color}></Indicator>;
+  return <Indicator animate={{ backgroundColor: color }}></Indicator>;
 };
 
 export default Project;
