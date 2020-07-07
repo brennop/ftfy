@@ -1,7 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import { FaPlus } from "react-icons/fa";
-import { startTimer } from "../services/api";
+import { startTimer, getTags } from "../services/api";
 import dayjs from "dayjs";
 import copy from "copy-to-clipboard";
 import { encode } from "../utils/base64";
@@ -61,12 +61,31 @@ const ProjectSuggestion = styled.span`
   color: ${(props) => props.color};
 `;
 
+const Tag = styled.div`
+  background: #c0cdea;
+  border-radius: 4px;
+  color: #101010b0;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 0.5em;
+
+  ::before {
+    content: "#";
+  }
+`;
+
 const Create = ({ onSubmit }) => {
   const [project, setProject] = useState();
   const [value, setValue] = useState("");
+  const [tags, setTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
   const projects = useProjects();
 
   const input = useRef();
+
+  useEffect(() => {
+    getTags().then(setTags);
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -79,6 +98,8 @@ const Create = ({ onSubmit }) => {
 
     const entry = {
       description,
+      projectId: project,
+      tagIds: selectedTags.map((tag) => tag.id),
       start: dayjs(parsedDate?.start?.date()).toISOString(),
       end: parsedDate?.end
         ? dayjs(parsedDate?.end?.date()).toISOString()
@@ -95,6 +116,9 @@ const Create = ({ onSubmit }) => {
     <>
       <Container onSubmit={handleSubmit}>
         <Project id={project} />
+        {selectedTags.map((tag) => (
+          <Tag>{tag.name}</Tag>
+        ))}
         <InputContainer ref={input}>
           <Input
             value={value}
@@ -114,6 +138,15 @@ const Create = ({ onSubmit }) => {
           itemRenderer={(project) => (
             <ProjectSuggestion {...project}>{project.name}</ProjectSuggestion>
           )}
+        />
+        <Suggestions
+          onSelect={(tag) => setSelectedTags([...selectedTags, tag])}
+          input={input}
+          value={value}
+          setValue={setValue}
+          suggestions={tags}
+          trigger="#"
+          itemRenderer={(tag) => <span>{tag.name}</span>}
         />
         <Submit>
           <FaPlus />

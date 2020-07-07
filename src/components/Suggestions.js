@@ -94,19 +94,19 @@ const Suggestions = ({
   useEffect(() => {
     setFocused(0);
 
-    if (value.includes("@")) {
+    if (value.includes(trigger)) {
       setShow(true);
       setFiltered(
         suggestions
           .filter((suggestion) =>
-            includes(suggestion.name, value.split("@")[1])
+            includes(suggestion.name, value.split(trigger)[1])
           )
           .slice(0, 5)
       );
     } else {
       setShow(false);
     }
-  }, [suggestions, value]);
+  }, [suggestions, value, trigger]);
 
   return input.current
     ? createPortal(

@@ -41,3 +41,8 @@ export const getProjects = () =>
   api
     .get(`/workspaces/${workspace}/projects?page-size=100`)
     .then((res) => res.data);
+
+export const getTags = () =>
+  api
+    .get(`/workspaces/${workspace}/tags?page-size=100`)
+    .then((res) => res.data);
