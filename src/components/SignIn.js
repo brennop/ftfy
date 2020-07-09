@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import styled from '@emotion/styled';
-import { getWorkspaces, getUser } from '../services/api';
+import React, { useState } from "react";
+import styled from "@emotion/styled";
+import { getWorkspaces, getUser } from "../services/api";
 
 const Container = styled.form`
   width: 512px;
@@ -57,13 +57,13 @@ const SignIn = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const key = event.target.elements.key.value;
-    localStorage.setItem('key', key);
+    localStorage.setItem("key", key);
     getWorkspaces(key).then(setWorkspaces);
-    getUser(key).then(user => localStorage.setItem('user', user.id));
+    getUser(key).then((user) => localStorage.setItem("user", user.id));
   };
 
   const handleSelect = (id) => {
-    localStorage.setItem('workspace', id);
+    localStorage.setItem("workspace", id);
   };
 
   return (
@@ -78,7 +78,10 @@ const SignIn = () => {
       <List>
         {workspaces.map((workspace) => (
           <li key={workspace.id}>
-            <Link href="/" onClick={() => handleSelect(workspace.id)}>
+            <Link
+              href={window.location}
+              onClick={() => handleSelect(workspace.id)}
+            >
               {workspace.name}
             </Link>
           </li>
@@ -89,3 +92,4 @@ const SignIn = () => {
 };
 
 export default SignIn;
+
