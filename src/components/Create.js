@@ -77,18 +77,20 @@ const Create = ({ onSubmit }) => {
 
     const { value } = event.target.elements.description;
 
-    const [parsedDate] = chrono.pt.parse(value);
+    const [parsedDate, parsedDateEnd] = chrono.pt.parse(value);
 
-    const description = value.replace(parsedDate?.text, "");
+    const description = value
+      .replace(parsedDate?.text, "")
+      .replace(parsedDateEnd?.text, "");
+
+    const end = parsedDate?.end?.date() || parsedDateEnd?.start.date();
 
     const entry = {
       description,
       projectId: project,
       tagIds: selectedTags,
       start: dayjs(parsedDate?.start?.date()).toISOString(),
-      end: parsedDate?.end
-        ? dayjs(parsedDate?.end?.date()).toISOString()
-        : undefined,
+      end: end && dayjs(end).toISOString(),
     };
 
     startTimer(entry).then(onSubmit);
@@ -140,3 +142,4 @@ const Create = ({ onSubmit }) => {
 };
 
 export default Create;
+
