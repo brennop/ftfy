@@ -15,11 +15,11 @@ import Project from "./Project";
 import Tags from "./Tags";
 
 const MotionContainer = styled(motion.div)`
-  background: #f0f0f0;
+  background: #e8eaec;
   padding: 1em;
   border-radius: 12px;
   height: 4em;
-  box-shadow: 0 0 16px 8px #00000008;
+  box-shadow: 0 4px 8px -4px #00000020;
   display: flex;
   align-items: center;
   position: absolute;
@@ -228,3 +228,4 @@ const Entry = ({
 };
 
 export default Entry;
+
